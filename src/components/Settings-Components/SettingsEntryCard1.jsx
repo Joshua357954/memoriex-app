@@ -7,10 +7,10 @@ export default function SettingsEntryCard1() {
 			
 			<label htmlFor="note" className="dark:text-gray-50 text-sm text-left font-extralight">Edit Your Profile Info</label>
 
-			<input value="Joshua"	name="username" className="border-2 border-blue-100 py-1 px-2 rounded-md placeholder-gray-400 text-sm focus:outline-none"
+			<input defaultValue="Joshua"	name="username" className="border-2 border-blue-100 py-1 px-2 rounded-md placeholder-gray-400 text-sm focus:outline-none"
 			placeholder="UserName" />
 
-			<input value="123456" name="password" className="border-2 border-blue-100 py-1 px-2 rounded-md placeholder-gray-400 text-sm focus:outline-none"
+			<input defaultValue="123456" name="password" className="border-2 border-blue-100 py-1 px-2 rounded-md placeholder-gray-400 text-sm focus:outline-none"
 			placeholder="Password" />
 
 			<label htmlFor="password2" className="dark:text-gray-50 text-sm text-left font-extralight">Pls Only Fill To Change Password</label>

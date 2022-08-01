@@ -51,9 +51,9 @@ export default function Navbar({changeScreen,onSettings}) {
 				{ routes.map((route,idx) => <div key={idx} onClick={()=>Choose(route.name)} className={`${select==route.name ? `border-b-4 ${selectColor}`:'text-gray-400'} ${tc}`}>{route.icon}</div> ) } 
 			</div>
 
-		<div className="lg:col-span-1 md:h-full flex justify-center transition-all lg:items-center absolute top-2 right-0 w-full" >
-				{<SearchIcon  className="dark:bg-gray-800 dark:text-gray-100 text-gray-50 bg-gray-300 p-[3px] rounded-full text-xl md:text-2xl lg:text-3xl"/>}
-				<Settings onClick={()=>onSettings(true)} className=" dark:text-gray-100 text-gray-600 p-[2px] rounded-full text-xl md:text-2xl lg:text-3xl"/>
+		<div className="col-span-1 absolute top-1 right-0 px-2 space-x-3 flex justify-evenly transition-all " >
+				<SearchIcon  className="dark:bg-gray-800 dark:text-gray-100 text-gray-50 bg-gray-200 p-[3px] rounded-full text-2xl md:text-3xl lg:text-3xl"/>
+				<Settings onClick={()=>onSettings(true)} className=" dark:text-gray-100 text-gray-600 p-[2px] rounded-full text-2xl md:text-3xl lg:text-3xl"/>
 			</div>
 
 		</div>

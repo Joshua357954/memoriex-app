@@ -34,12 +34,13 @@ export default function PostCard({PCRef,postId,username,text,img,time,link}) {
 		<div ref={scrollRef} className="w-full h-[500px] transition-all  md:h-[520px] dark:text-gray-50 bg-white border-1 border-t-gray-300 shadow-md mb-3 relative"> 
 			{/* Top Post Bar */}
 			<div className="flex  dark:bg-gray-800 px-1 border-1 border-b-blue-300 pt-1 flex-row items-center relative">
+				
 				<div className="w-12 h-12 flex justify-center items-center rounded-full p-1 border-2 border-red-300">
 					<img src={Pix0} alt="" className="w-full  " />
 				</div>
 
 				<div className="ml-2">
-					<p className="text-sm">Joshua Boyi > Shared A Post</p>
+					<p className="text-sm">Joshua Boyi  Shared A Post</p>
 					<p className="text-xs font-light">12 Jun 2022</p>
 				</div>
 
@@ -86,7 +87,7 @@ export default function PostCard({PCRef,postId,username,text,img,time,link}) {
 				</div>
 
 				<div className="ml-2">
-					<p className="text-sm">Joshua Boyi > Shared A Post</p>
+					<p className="text-sm">Joshua Boyi  Shared A Post</p>
 					<p className="text-xs font-light">12 Jun 2022</p>
 				</div>
 

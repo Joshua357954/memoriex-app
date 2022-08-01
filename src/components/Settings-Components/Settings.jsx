@@ -7,7 +7,7 @@ import MiniProfile from '../Profile-Components/MiniProfile.jsx'
 import { MdManageAccounts as Acct, MdLock as Lock } from 'react-icons/md'
 import { FaExchangeAlt as Exchange } from 'react-icons/fa'
 export default function Settings() {
-	const collBtnH = '12'
+	const collBtnH = '14'
 	const [Collapse,setCollapse] = useState( { 'acctSet':false, 'acctSet2':false } )
 	
 	function toggleCollapse(item) {
@@ -27,13 +27,13 @@ export default function Settings() {
 				</div>
 					
 				{/* Update Profile */}
-				<div className={`transition-all ${Collapse['acctSet']? "max-h-fit" : `max-h-${collBtnH}`} overflow-hidden w-full`}>
+				<div className={`transition-all ${Collapse['acctSet']? "max-h-45" : `max-h-${collBtnH}`} overflow-hidden w-full`}>
 					<div onClick={()=>toggleCollapse('acctSet')} className={`cursor-pointer h-${collBtnH} space-x-2 px-2 py-1 dark:bg-gray-400 bg-gray-200 flex items-center dark:text-gray-50 text-gray-800 rounded-sm`}>
 						<Acct size={23}className="text-gray-900" /> <p className="text-sm">Account</p>
 					</div>
 
-					<div className="w-full h-full  ">
-						
+					<div className="w-full  ">
+
 						<PersonalInfo />
 
 					</div>		
