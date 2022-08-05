@@ -9,7 +9,7 @@ import {NavHide} from '../../context/hideNavContext.jsx'
 import {FaUserFriends as Friends, FaFacebookMessenger as Message} from 'react-icons/fa'
 
 
-export default function Navbar({changeScreen,onSettings}) {
+export default function Navbar({changeScreen,onSettings,onSearch}) {
 	const {hideNav} = useContext(NavHide)
 	const ico = 'text-xl md:text-2xl'
 	const selectColor = 'text-sky-400'
@@ -52,7 +52,7 @@ export default function Navbar({changeScreen,onSettings}) {
 			</div>
 
 		<div className="col-span-1 absolute top-1 right-0 px-2 space-x-3 flex justify-evenly transition-all " >
-				<SearchIcon  className="dark:bg-gray-800 dark:text-gray-100 text-gray-50 bg-gray-200 p-[3px] rounded-full text-2xl md:text-3xl lg:text-3xl"/>
+				<SearchIcon onClick={()=>onSearch(true)} className="dark:bg-gray-800 dark:text-gray-100 text-gray-800 bg-gray-100 p-[3px] rounded-full text-2xl md:text-3xl lg:text-3xl"/>
 				<Settings onClick={()=>onSettings(true)} className=" dark:text-gray-100 text-gray-600 p-[2px] rounded-full text-2xl md:text-3xl lg:text-3xl"/>
 			</div>
 

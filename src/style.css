@@ -1,10 +1,9 @@
 
 
-.logreg-Btn*,.logreg-Btn-active*{
-	outline:none;
-	background-color: red;
-}
 
+body{
+	-webkit-tap-highlight-color:transparent;
+}
 
 /*.conversation-card{
 	background-color: red;

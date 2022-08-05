@@ -1,27 +1,52 @@
+import '../style.css' 
 import React from 'react'
 import useAuth from '../hooks/useAuth.jsx'
 import { useNavigate } from 'react-router-dom'
+import { MdLock as Lock } from 'react-icons/md'
+import { LockApp } from '../context/lockChatContext.jsx'
+import { useContext, useState, useEffect, useCallback } from 'react'
 import { IoMdArrowBack as ArrowBack } from 'react-icons/io'
-import { useContext, useState, useCallback } from 'react'
 import NavBar from '../components/Nav-Components/Navbar.jsx'
-import Settings from '../components/Settings-Components/Settings.jsx'
 import Friend from '../components/Friend-Components/Friend.jsx'
 import Utilities from '../components/Post-Components/Utilities.jsx'
+import Search from '../components/Search-Components/Search.jsx'
+import Settings from '../components/Settings-Components/Settings.jsx'
 import FriendRequests from '../components/Friend-Components/FriendRequest.jsx'
 import Notification from '../components/Notification-Components/Notification.jsx'
 import MainPostContainer from '../components/Post-Components/MainPostContainer.jsx'
 import FriendSuggestion from '../components/Friend-Components/FriendSuggestion.jsx'
 
 export default function PostScreen() {
+	const store_name = 'memoriex-chat-lock-state'
+	const {chatLock,setChatLock,showBtn,setShowBtn} = useContext(LockApp)
+	const [openSearch,setOpenSearch] = useState(false)
 	const [openSettings,setOpenSettings] = useState(false)
 	const [currentScreen,setCurrentScreen] = useState('POST')
 	const nextScreen = useCallback((screen) => {
 			setCurrentScreen(screen)
 		}
 	)
-	const showSettings = (bool) => {
-		setOpenSettings(true)
+	const OStoreName= 'memoriex-chat-lock-state'
+	const store2 = 'lock-btn-state'
+
+	const lockScreen = () => {
+		setChatLock(true) 
+		localStorage.setItem(OStoreName,'true')
 	}
+	
+	useEffect(() => {
+		const lockState = localStorage.getItem(OStoreName) || 'false'
+		setChatLock(JSON.parse(lockState))
+	}, [])
+
+	useEffect(() => {
+		const lockBtnState = localStorage.getItem(store2) || 'false'
+		setShowBtn(JSON.parse(lockBtnState))
+	}, [])
+
+	const showSettings = (bool) => { setOpenSettings(bool) }
+	const showSearch = (bool) => { setOpenSearch(bool) }
+
 	const scrollbar = 'scrollbar scrollbar-thin dark:scrollbar-track-gray-500 cursor-pointer  dark:hover:scrollbar-thumb-gray-400 scrollbar-track-gray-50 hover:scrollbar-thumb-gray-400'
 
 	return (
@@ -29,7 +54,7 @@ export default function PostScreen() {
 
 			<section className="flex flex-col grid-rows-6 dark:bg-gray-800 grid-cols-1 w-full h-full">
 
-				<NavBar changeScreen={nextScreen} onSettings={showSettings} />
+				<NavBar changeScreen={nextScreen} onSettings={showSettings} onSearch={showSearch} />
 
 				<div className="h-[90vh] grid grid-cols-6 grid-rows-1 transition-all">
 					
@@ -46,6 +71,21 @@ export default function PostScreen() {
 
 				</div>
 
+			{ showBtn ?
+				<button onClick={lockScreen}
+					className="flex flex-col justify-center items-center dark:bg-blue-400 bg-blue-300 p-2
+					h-12 w-12 p-1 rounded-full absolute bottom-32 right-5">
+					<Lock size={30} className="text-gray-800 dark:text-gray-100" />	
+				</button>: ""
+			}
+
+			{/* Search Panel */}
+
+			{
+				openSearch ? <Search onSearch={showSearch} /> : ""
+			}
+
+
 			{/*  Settings Panel  */}
 			{ openSettings ?
 				<div className="bg-transparent w-screen h absolute top-0 bottom-[-20px] left-0 right-0 flex justify-end" >
@@ -56,7 +96,7 @@ export default function PostScreen() {
 						</div>
 
 						<div className={`md:${scrollbar} h-[90vh] w-full overflow-y-auto`}>	
-							<Settings/>
+							<Settings onSettings={showSettings}/>
 						</div>
 						
 					</div>

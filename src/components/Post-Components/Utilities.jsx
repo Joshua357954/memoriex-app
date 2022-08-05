@@ -10,13 +10,15 @@ import ThemeToggle from '../Settings-Components/Theme.jsx'
 
 export default function Utilities() {
 	const utilsDetails = [
-				{name:"Profile",icon:<User fill='rgba(1,1,1,0.7)' />},
-				{name:"Event",icon:<Event fill='rgba(1,1,1,0.7)'/>},
-				{name:"Settings",icon:<Setting fill='rgba(1,1,1,0.7)'/>},
-				{name:"LogOut",icon:<LogOut />}
+				{name:"Profile", to:"/profile",icon:<User fill='rgba(1,1,1,0.7)' />},
+				{name:"Event", to:"#", icon:<Event fill='rgba(1,1,1,0.7)'/>},
+				{name:"Settings", to:"#", icon:<Setting fill='rgba(1,1,1,0.7)'/>},
+				{name:"LogOut", to:"#", icon:<LogOut />}
 	]
+	const scrollbar = `${window.innerWidth>400 ? 'scrollbar scrollbar-thin dark:scrollbar-track-gray-600 cursor-pointer  dark:hover:scrollbar-thumb-gray-500 scrollbar-track-gray-50 hover:scrollbar-thumb-gray-400': ""} `
+	
 	return (
-		<aside className="hidden  md:block md:col-span-2 lg:col-span-1 transition-all cursor-default dark:bg-gray-900  bg-white">	
+		<aside className={`${scrollbar} overflow-y-auto  hidden h-full md:block md:col-span-2 lg:col-span-1 transition-all cursor-default dark:bg-gray-900  bg-white`} >	
 			
 			<div className=" h-full w-full flex flex-col items-center justify-around">
 				
@@ -33,9 +35,9 @@ export default function Utilities() {
 
 				</div>
 
-				<div className="w-[93%] dark:bg-gray-500 bg-gray-100 flex flex-col justify-between space-y-4 px-2 py-3 rounded-md">
+				<div className="w-[93%] dark:bg-gray-500 my-1 bg-gray-100 flex flex-col justify-between space-y-4 px-2 py-3 rounded-md">
 					{
-						utilsDetails.map((item,idx)=> <UtilsCard key={idx} icon={item.icon} name={item.name} /> )
+						utilsDetails.map((item,idx)=> <UtilsCard key={idx} icon={item.icon} name={item.name} to={item?.to} /> )
 					}
 					
 				</div>

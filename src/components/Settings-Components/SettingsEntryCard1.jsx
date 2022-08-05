@@ -3,7 +3,7 @@ import React from 'react'
 export default function SettingsEntryCard1() {
 	return (
 
-		<div className='flex flex-col w-full space-y-4 pt-2 dark:bg-gray-600 bg-gray-100 justifystary items-center'>
+		<div className='flex flex-col w-full h-full space-y-4 pt-2 dark:bg-gray-600 bg-gray-100 justifystary items-center'>
 			
 			<label htmlFor="note" className="dark:text-gray-50 text-sm text-left font-extralight">Edit Your Profile Info</label>
 

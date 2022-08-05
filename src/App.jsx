@@ -1,14 +1,23 @@
-import React from 'react'
-import { useState } from 'react'
 import './index.css'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import React from 'react'
+import { useState, useContext } from 'react'
 import LogRegScreen from './screens/LogReg.jsx'
 import ChatScreen from './screens/ChatScreen.jsx'
 import HomeScreen from './screens/HomeScreen.jsx'
-import ProtectedRoute from './utils/ProtectedRoute.jsx'
 import ProtectLogin from './utils/ProtectLogin.jsx'
+import LockScreen from './modals/LockScreenModal.jsx'
+import AllAccountScreen from './screens/Accounts.jsx'
+import { LockApp } from './context/lockChatContext.jsx'
+import ProfileScreen from './screens/ProfileScreen.jsx'
+import ProtectedRoute from './utils/ProtectedRoute.jsx'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 
 function App() {
+  const {chatLock} = useContext(LockApp)
+
+  if ( chatLock )
+    return <LockScreen />
+
   return (
       <BrowserRouter>
         
@@ -21,9 +30,11 @@ function App() {
 
           <Route path="/home" exact element={<HomeScreen/>} />
 
+          <Route path="/Profile"  element={<ProfileScreen/>} />
 
           <Route path="/Chat"  element={<ChatScreen/>} />
 
+         <Route path="/Accounts"  element={<AllAccountScreen/>} />
 
         </Routes>
 
