@@ -20,6 +20,14 @@ export default function Settings() {
 			...prev,[item]:!Collapse[item],
 		})) 
 	}
+
+	function logOut(){
+		const sure = confirm('☸️ Are You Sure You Want To LogOut →')
+		if (sure){
+			navigate('/Accounts')
+		}
+	}
+
 	const scrollbar = 'scrollbar scrollbar-thin dark:scrollbar-track-gray-600 cursor-pointer  dark:hover:scrollbar-thumb-gray-500 scrollbar-track-gray-50 hover:scrollbar-thumb-gray-400'
 
 	return (
@@ -47,7 +55,7 @@ export default function Settings() {
 			{/* Others */}
 				<div className="focus:outline-none flex flex-col space-y-3 my-4 px-2 dark:text-gray-50" >	
 					
-					<div onClick={()=>navigate('/Accounts')}className="mt-3 flex space-x-4" ><p>Switch Account</p> <Exchange/></div>
+					<div onClick={logOut}className="mt-3 flex space-x-4" ><p>Switch Account</p> <Exchange/></div>
 
 
 				</div>
