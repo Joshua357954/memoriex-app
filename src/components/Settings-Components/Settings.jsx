@@ -22,7 +22,7 @@ export default function Settings() {
 	}
 
 	function logOut(){
-		const sure = confirm('☸️ Are You Sure You Want To LogOut →')
+		const sure = confirm('☸️ Do You You Want To LogOut ⚠️')
 		if (sure){
 			navigate('/Accounts')
 		}
@@ -31,7 +31,7 @@ export default function Settings() {
 	const scrollbar = 'scrollbar scrollbar-thin dark:scrollbar-track-gray-600 cursor-pointer  dark:hover:scrollbar-thumb-gray-500 scrollbar-track-gray-50 hover:scrollbar-thumb-gray-400'
 
 	return (
-		<div className="h-full w-full dark:bg-gray-700 bg-gray-100 ">
+		<div className="h-full w-full dark:bg-gray-800 bg-gray-100 ">
 			 <div className={`flex flex-col w-full `}>	
 					
 				<div className="w-full my-3">	
@@ -73,7 +73,7 @@ export default function Settings() {
 					</div>		
 				</div>
 
-				<div className="mx-2 my-3">	
+				<div className="px-2 py-3">	
 					<Theme />
 				</div>
 				

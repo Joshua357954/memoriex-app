@@ -1,4 +1,3 @@
-
 import React, {useState,useEffect} from 'react'
 import SearchCard from './SearchCard.jsx'
 import { MdClose as Close } from 'react-icons/md'

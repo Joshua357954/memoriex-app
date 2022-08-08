@@ -3,7 +3,7 @@ import React from 'react'
 
 export default function MiniProfile() {
 	return (
-		<div className='flex w-[90%] flex-col bg-transparent'>
+		<div className='flex w-full flex-col bg-transparent'>
 			<div className='flex justify-between space-x-1 bg-gray-100 dark:bg-gray-500 py-1 px-1 rounded-sm items-center px-1'>
 				<div className=" text-white text-center bg-gray-800 w-8 h-8 rounded-full flex justify-center items-center"><p>J</p></div>
 				<div className="w-[95%]">

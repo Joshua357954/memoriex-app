@@ -4,50 +4,77 @@ import useAuth from '../hooks/useAuth.jsx'
 import { useNavigate } from 'react-router-dom'
 import { MdLock as Lock } from 'react-icons/md'
 import { LockApp } from '../context/lockChatContext.jsx'
-import { useContext, useState, useEffect, useCallback } from 'react'
 import { IoMdArrowBack as ArrowBack } from 'react-icons/io'
 import NavBar from '../components/Nav-Components/Navbar.jsx'
 import Friend from '../components/Friend-Components/Friend.jsx'
-import Utilities from '../components/Post-Components/Utilities.jsx'
 import Search from '../components/Search-Components/Search.jsx'
+import AddStory from '../components/Story-Components/AddStory.jsx'
+import Utilities from '../components/Post-Components/Utilities.jsx'
+import { useContext, useState, useEffect, useCallback } from 'react'
 import Settings from '../components/Settings-Components/Settings.jsx'
+import ViewStoryBox from '../components/Story-Components/ViewStoryBox.jsx'
 import FriendRequests from '../components/Friend-Components/FriendRequest.jsx'
 import Notification from '../components/Notification-Components/Notification.jsx'
 import MainPostContainer from '../components/Post-Components/MainPostContainer.jsx'
 import FriendSuggestion from '../components/Friend-Components/FriendSuggestion.jsx'
 
+
 export default function PostScreen() {
 	const store_name = 'memoriex-chat-lock-state'
+	const [newStory,setNewStory] = useState(false)
+	const [viewStory,setViewStory] = useState(false)
 	const {chatLock,setChatLock,showBtn,setShowBtn} = useContext(LockApp)
 	const [openSearch,setOpenSearch] = useState(false)
 	const [openSettings,setOpenSettings] = useState(false)
 	const [currentScreen,setCurrentScreen] = useState('POST')
+	
+
+	const toggleAddStory = (state) => {
+		console.log("showing story ...")
+		setNewStory(state)
+	}
+
+
+	const toggleViewStoryBox = (state) => {
+		console.log("View story ...")
+		setViewStory(state)
+	}
+
+
 	const nextScreen = useCallback((screen) => {
 			setCurrentScreen(screen)
 		}
 	)
+
+
 	const OStoreName= 'memoriex-chat-lock-state'
 	const store2 = 'lock-btn-state'
+
 
 	const lockScreen = () => {
 		setChatLock(true) 
 		localStorage.setItem(OStoreName,'true')
 	}
+
 	
 	useEffect(() => {
 		const lockState = localStorage.getItem(OStoreName) || 'false'
 		setChatLock(JSON.parse(lockState))
 	}, [])
 
+
 	useEffect(() => {
 		const lockBtnState = localStorage.getItem(store2) || 'false'
 		setShowBtn(JSON.parse(lockBtnState))
 	}, [])
 
-	const showSettings = (bool) => { setOpenSettings(bool) }
+	
 	const showSearch = (bool) => { setOpenSearch(bool) }
+	const showSettings = (bool) => { setOpenSettings(bool) }
 
-	const scrollbar = 'scrollbar scrollbar-thin dark:scrollbar-track-gray-500 cursor-pointer  dark:hover:scrollbar-thumb-gray-400 scrollbar-track-gray-50 hover:scrollbar-thumb-gray-400'
+
+	const absolute_full = 'absolute top-0 bottom-0 right-0 left-0'
+	const scrollbar = 'hover:scrollbar scrollbar-thin dark:scrollbar-track-gray-700 cursor-pointer  dark:hover:scrollbar-thumb-gray-300 scrollbar-track-gray-50 hover:scrollbar-thumb-gray-400'
 
 	return (
 		<main className="relative dark:bg-gray-800 bg-gray-100  h-screen w-screen">
@@ -60,7 +87,7 @@ export default function PostScreen() {
 					
 					<Utilities />
 				{/* Change Screens Conditionally */}
-					{ (currentScreen=='POST'? <MainPostContainer /> : currentScreen=='FRIEND'? <Friend /> : currentScreen=='NOTIFY'? <Notification /> : <MainPostContainer/> ) }
+					{ (currentScreen=='POST'? <MainPostContainer toggleViewStoryBox={toggleViewStoryBox} toggleAddStory={toggleAddStory} /> : currentScreen=='FRIEND'? <Friend /> : currentScreen=='NOTIFY'? <Notification /> : <MainPostContainer/> ) }
 			
 					<div className="md:col-span-1 lg:col-span-2 row-span-1 bg-orange-300 hidden lg:grid grid-rows-6 h-full ">	
 						
@@ -71,6 +98,7 @@ export default function PostScreen() {
 
 				</div>
 
+			{/* Lock Button */}
 			{ showBtn ?
 				<button onClick={lockScreen}
 					className="flex flex-col justify-center items-center dark:bg-blue-400 bg-blue-300 p-2
@@ -79,28 +107,44 @@ export default function PostScreen() {
 				</button>: ""
 			}
 
+
 			{/* Search Panel */}
 
-			{
-				openSearch ? <Search onSearch={showSearch} /> : ""
-			}
+			{  openSearch ? <Search onSearch={showSearch} /> : ""  }
 
 
 			{/*  Settings Panel  */}
 			{ openSettings ?
-				<div className="bg-transparent w-screen h absolute top-0 bottom-[-20px] left-0 right-0 flex justify-end" >
-					<div className="bg-gray-100 dark:bg-gray-700 w-screen md:w-[45vw] lg:w-[30vw] h-full ">
+				<div className={`${absolute_full} bg-transparent w-screen h-screen flex justify-end `}>
+					<div className="bg-gray-100 dark:bg-gray-700 h-full md:w-[45vw] lg:w-[30vw] h-full ">
 						<div className="w-full h-12 dark:bg-gray-700 bg-gray-300 flex  dark:text-gray-50 textjustify-start items-center space-x-4 px-1">
 							<ArrowBack onClick={()=>setOpenSettings(false)} size={25} className="dark:text-gray-50 text-gray-800" />
 							<p className="dark:text-gray-100 text-gray-900">Settings</p>
 						</div>
 
-						<div className={`md:${scrollbar} h-[90vh] w-full overflow-y-auto`}>	
+						<div className={`md:${scrollbar} h-[87vh] w-full overflow-y-auto`}>	
 							<Settings onSettings={showSettings}/>
 						</div>
 						
 					</div>
 				</div> : "" 
+			}
+
+
+		{/* Modal to Create a New Story */}
+
+			{ newStory ?
+				<div className={`${absolute_full}`}>	
+					<AddStory toggleAddStory={toggleAddStory} />
+				</div> : ""
+			}
+
+		{/* Modal to View a User's Story */}
+
+			{ viewStory ?
+				<div className={`${absolute_full}`}>
+					<ViewStoryBox toggleViewStory={toggleViewStoryBox} />	
+				</div> : ""
 			}
 
 			</section>

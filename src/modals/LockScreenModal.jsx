@@ -1,17 +1,18 @@
 import React from 'react'
-// import Pix0 from '../../fonts/pix1.png'
-// import { IoEnter } from 'react-icons/io'
-import { FaLockOpen as Enter1 } from 'react-icons/fa'
+import Pix from '../fonts/pix3.png'
 import { FiDelete as Delete } from 'react-icons/fi'
 import { MdLockOpen as Enter } from 'react-icons/md'
-import Pix from '../fonts/pix3.png'
-import {useState, useEffect, useContext, useCallback} from 'react'
+import { FaLockOpen as Enter1 } from 'react-icons/fa'
+import { NavHide } from '../context/hideNavContext.jsx'
 import { LockApp } from '../context/lockChatContext.jsx'
+import { useState, useEffect, useContext, useCallback } from 'react'
+
 
 export default function LockScreenModal() {
 	const pass_code_length = 5
 	const username = "Kemo Dolxx"
 	const fakeItems= [1,1,1,1,1]
+	const {setHideNav} = useContext(NavHide)
 	const [passCode,setPassCode] = useState('')
 	const store_name = 'memoriex-chat-lock-state'
 	const code_store = 'memoriex-chat-code'
@@ -49,6 +50,12 @@ export default function LockScreenModal() {
 		if(!isNaN(KEY) && e.code!='Space'){
 			clickBtn(KEY)
 		}
+		if (e.key=='Enter'){
+			return unlock()
+		}
+		if (e.key=='Backspace'){
+			return Delete()
+		}
 	}
 
 
@@ -66,16 +73,17 @@ export default function LockScreenModal() {
 			setChatLock(false)
 			window.onkeypress = {}
 			localStorage.setItem(store_name,'false') 
+			setHideNav(false)
 		}	
 		 
 	}
 
 
 	return (
-		<div className="flex select-none justify-center items-center dark:bg-gray-800 bg-gray-50 h-screen w-screen">
-			<div className="w-full flex flex-col justify-center space-y-5 items-center bg-red-400 h-full md:w-[40vw] lg:[50vw]">
+		<div className="flex select-none py-1 justify-center items-center dark:bg-gray-800 bg-gray-50 h-screen w-screen">
+			<div className="w-full flex flex-col justify-around  items-center bg-red-400 h-full md:w-[40vw] lg:[50vw]">
 				<div className="flex flex-col items-center justify-between">
-					<div className="rounded-full h-24 w-24 ">
+					<div className="rounded-full h-16 w-16 ">
 						<img src={Pix} className="w-full h-full rounded-full" alt=""/>
 					</div>
 					<p className="mt-2">{username}</p>
@@ -87,7 +95,7 @@ export default function LockScreenModal() {
 					}
 				</div>
 				
-				<div className="w-full bg-transparent text-2xl flex flex-col space-y-4">
+				<div className="w-full bg-transparent text-xl lg:text-2xl flex flex-col space-y-4">
 					{
 						numbs.map((box,idx)=> {
 							return (<div key={idx} className='flex justify-around'>
@@ -97,9 +105,11 @@ export default function LockScreenModal() {
 								</div>)
 						} )
 					}
+			
 				</div>
 
 				<button className="bg-transparent focus:outline-none font-bold text-sm text-blue-400 pt-5 rounded-lg p-2"> Forgotten Code </button>
+					
 			</div>
 		</div>
 	)

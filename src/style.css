@@ -5,7 +5,34 @@ body{
 	-webkit-tap-highlight-color:transparent;
 }
 
-/*.conversation-card{
+
+/*.input_box{
+	background-color:skyblue;
+	width: 80px;
+	z-index: -200;
+	border-radius: .4rem;
+	opacity: 1;
+	/*visibility: hidden;*/
+/*}
+.input_box::before{
+	content:"Change";
+	display: block;
+	height: 7px;
+	z-index: -10;
+	background:skyblue;
+	text-align: center;
+
+	color:white;
+	padding: 4px 10px 4px 8px;
+*/
+
+/*.input_box:focus::before{
+	outline: none;
+}
+.input_box:hover::before{
+	content: 'Choose'
+}
+*//*/*.conversation-card{
 	background-color: red;
 }
 

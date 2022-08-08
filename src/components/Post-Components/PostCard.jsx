@@ -32,6 +32,7 @@ export default function PostCard({PCRef,postId,username,text,img,time,link}) {
 
 	return text ? (
 		<div ref={scrollRef} className="w-full h-[500px] transition-all  md:h-[520px] dark:text-gray-50 bg-white border-1 border-t-gray-300 shadow-md mb-3 relative"> 
+			
 			{/* Top Post Bar */}
 			<div className="flex  dark:bg-gray-800 px-1 border-1 border-b-blue-300 pt-1 flex-row items-center relative">
 				
@@ -46,6 +47,7 @@ export default function PostCard({PCRef,postId,username,text,img,time,link}) {
 
 				<div className='absolute top-1 right-2'>...</div>
 			</div>
+			
 			{/* 2nd Post Section */}
 			<div className="cursor-default w-full pb-1 pt-2 text-sm font-extralight dark:bg-gray-800 px-1">
 				<p onClick={closeReactionBox}>My name is Joshua Boyi Ifeola , if you know me 
@@ -53,11 +55,13 @@ export default function PostCard({PCRef,postId,username,text,img,time,link}) {
 				pvc's and get vote peter obi because he is a very good 
 				candidate. </p>
 			</div>
+			
 			{/* 3rd Section */}
 			<div className="w-full dark:bg-gray-800">
 				<img src={PPix} alt="post-pix" className="w-full" onClick={closeReactionBox}/>
 				<p className="pl-1 text-sm font-extralight">&#128151; &#128516; &#128524; You and 24 Others</p>
 			</div>
+			
 			{/* Utils Section*/}
 			<div className="flex select-none cursor-pointer dark:bg-gray-800 justify-between p-2">
 				<div onDoubleClick={showReactions} className="text-blue-500 px-4 py-2 rounded-md dark:bg-gray-600 bg-gray-100 flex justify-between items-center space-x-2"><Like/>12</div>
@@ -80,6 +84,7 @@ export default function PostCard({PCRef,postId,username,text,img,time,link}) {
 		// Post Card With Only Text (without image)
 	: (
 		<div ref={scrollRef} className="w-full transition-all mb-1 dark:text-gray-50 bg-white border-1 border-t-gray-300 shadow-md mb-3 relative"> 
+			
 			{/* Top Post Bar */}
 			<div className="flex cursor-pointer dark:bg-gray-800 px-1 border-1 border-b-blue-300 pt-1 flex-row items-center relative">
 				<div className="w-12 h-12 flex justify-center items-center rounded-full p-1 border-2 border-red-300">
@@ -93,6 +98,7 @@ export default function PostCard({PCRef,postId,username,text,img,time,link}) {
 
 				<div className='absolute top-1 right-2 '>...</div>
 			</div>
+			
 			{/* 2nd Post Section */}
 			<div className="cursor-default w-full pb-1 pt-2 text-sm font-extralight dark:bg-gray-800 px-1">
 				<p onClick={closeReactionBox}>My name is Joshua Boyi Ifeola , if you know me 

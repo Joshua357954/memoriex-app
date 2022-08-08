@@ -7,7 +7,7 @@ import {BsFileRichtextFill as Text1, BsTextareaT as Text} from 'react-icons/bs'
 import { useState, useEffect, useRef, useContext } from 'react'
 import {NavHide} from '../../context/hideNavContext.jsx'
 
-export default function MainPostContainer() {
+export default function MainPostContainer({toggleViewStoryBox,toggleAddStory}) {
 	const MyPosts = [1,2,2]
 	const contRef = useRef(null)
 	const {setHideNav} = useContext(NavHide)
@@ -31,7 +31,7 @@ export default function MainPostContainer() {
 
 				<PostButton createPost={openPostModal} />
 
-				<StoryContainer/>
+				<StoryContainer action1={toggleAddStory} action2={toggleViewStoryBox}/>
 
 				{
 					MyPosts.map(
