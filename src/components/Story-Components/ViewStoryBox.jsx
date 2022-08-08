@@ -2,13 +2,13 @@ import React from 'react'
 import { useContext } from 'react'
 import { ViewStory } from '../../context/showStoryContext.jsx'
 	
-export default function ViewStoryBox({toggleViewStory}) {
+export default function ViewStoryBox({toggleViewStoryBox}) {
 
 	const {showStory,setShowStory} = useContext(ViewStory)
 
 	function closeStory () {
 		setShowStory({})
-		toggleViewStory(false)
+		toggleViewStoryBox(false)
 	}
 
 

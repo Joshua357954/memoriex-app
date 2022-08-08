@@ -143,7 +143,7 @@ export default function PostScreen() {
 
 			{ viewStory ?
 				<div className={`${absolute_full}`}>
-					<ViewStoryBox toggleViewStory={toggleViewStoryBox} />	
+					<ViewStoryBox toggleViewStoryBox={toggleViewStoryBox} />	
 				</div> : ""
 			}
 

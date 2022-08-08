@@ -11,7 +11,7 @@ export default function StoryContainer({action1,action2}) {
 	return (
 			<div className={`${window.innerWidth>400 ? 'scrollbar dark:scrollbar-track-gray-600 dark:scrollbar-thumb-gray-600  dark:hover:scrollbar-thumb-gray-400 scrollbar-thin pb-3 scrollbar-track-white scrollbar-thumb-gray-200':''} flex h-32 dark:bg-gray-900 bg-white border-1 border-black w-full p-1 overflow-x-auto`}>
 			
-				<div onClick={createStory} className="h-full w-16 bg-gray-800 rounded-md mr-1 flex-shrink-0">
+				<div onClick={createStory} className="cursor-pointer h-full w-16 bg-gray-800 rounded-md mr-1 flex-shrink-0">
 					<img src={Pix0} alt="profile pix"className='h-[65%] w-full' />
 					<div className="bg-gray-500 text-[9px] p-[2px] font-light h-[35%] rounded-b-md pt-1 text-center text-white w-full"> Add to Story </div>
 				</div>
