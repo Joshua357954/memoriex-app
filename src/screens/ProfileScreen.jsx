@@ -7,10 +7,10 @@ import ViewImage from '../modals/ViewImgModal.jsx'
 import PostModal from '../modals/makePostModal.jsx'
 import { BsFillCameraFill as Camera, BsFilePost as PostIcon } from "react-icons/bs"
 import { IoMdArrowBack as ArrowBack } from 'react-icons/io'
-import PostCard from '../Components/Post-Components/PostCard.jsx'
+import PostCard from '../components/Post-Components/PostCard.jsx'
 import { BiCopy , BiMessageSquareAdd as Add } from 'react-icons/bi'
 import Utilities from '../components/Post-Components/Utilities.jsx'
-import PostButton from '../Components/Post-Components/PostButton.jsx'
+import PostButton from '../components/Post-Components/PostButton.jsx'
 import { FaUserFriends as Friends, FaBriefcase as Work , FaClock as Joined } from 'react-icons/fa'
 import { MdModeEdit as Edit, MdSchool as School, MdLocationOn as Location } from 'react-icons/md'
 
