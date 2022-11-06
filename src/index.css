@@ -3,8 +3,13 @@
 @tailwind utilities;
 
 @font-face{
-	font-family: "Poppins";
+	font-family: "Popi";
 	src: url('./fonts/pop.ttf');
+}
+
+@font-face{
+	font-family: "Poppins";
+	src: url('./fonts/klavika-light.otf');
 }
 
 @font-face{
@@ -21,18 +26,16 @@
 
 
 
-.logreg-form{
+/*.logreg-form{
 	@apply   h-screen flex  flex-col border-green-300 border-b-0 border-2
 
-}
+}*/
 
 .logreg-form h2{
 	@apply mt-9 text-center font-bold text-4xl text-gray-700 
 }
 
-.logreg-form form{
-	@apply flex flex-col m-[2rem] mx-auto 
-}
+
 
 .logreg-form form input{
 	@apply mb-10 px-7 mx-auto py-3 md:w-[350px] w-[250px] border-b-[5px] bg-transparent rounded-b-sm border-gray-700 focus:outline-none 
@@ -44,10 +47,6 @@
 
 .logreg-Btn-active{
 	@apply px-2 border-b-[5.5px] rounded-sm border-green-300 pb-1 outline-none focus:outline-none 
-}
-
-.log-reg-box{
-	@apply flex justify-evenly mx-auto mt-[4rem] mb-[2.5rem] w-full 
 }
 
 .--submit{

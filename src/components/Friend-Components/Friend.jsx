@@ -1,8 +1,10 @@
+
+import AllFriends from './AllFriends.jsx'
 import React,{useState,useCallback} from 'react'
 import FriendSugg from './friendSuggestionCard.jsx'
-import AllFriends from './AllFriends.jsx'
 import FriendRequests from '../../components/Friend-Components/FriendRequest.jsx'
 import FriendSuggestion from '../../components/Friend-Components/FriendSuggestion.jsx'
+
 
 export default function Friend() {
 	const [openMyFriends,setOpenMyFriends] = useState(false)
@@ -24,8 +26,10 @@ export default function Friend() {
 				</div>
 				{/* Friend Requests & Suggstion  */}
 				<div className="w-full h-full">
+					
+					<FriendRequests/>
 					<FriendSuggestion/>
-					<FriendRequests/>	
+				
 				</div>
 			</div>
 

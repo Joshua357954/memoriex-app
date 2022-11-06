@@ -1,13 +1,16 @@
 import React from 'react'
 import Pix  from  './../../fonts/pix1.png'
+import { useNavigate } from "react-router-dom"
+
 
 export default function SearchCard({name,bio,img}) {
+	const navigate = useNavigate()
 	return (
 		<div className="w-full h-full h-16">
-			<div className="flex w-full px-2 py-1 items-center justify-start space-x-2">	
+			<div onClick={() => navigate(`/profile/${name}`)} className="flex w-full px-2 py-1 items-center justify-start space-x-2">	
 				{ img ? 
 					( <div className="w-14 h-14 flex justify-center items-center rounded-full">
-							  <img src={Pix} className="w-full h-full" alt="User Pix" />
+							  <img src={img} className="w-full h-full" alt="User Pix" />
 					 </div>) 
 					:
 					( <div className="w-12 h-12 flex justify-center border-2 dark:text-gray-200 border-gray-300 items-center rounded-full">

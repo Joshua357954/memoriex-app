@@ -1,5 +1,6 @@
 import React from 'react'
 import Pix0 from '../../fonts/pix1.png'
+import {useSelector} from "react-redux"
 import { useNavigate } from "react-router-dom"
 import {IoMdImages as Image1} from 'react-icons/io'
 import {TbVideoPlus as Video2} from 'react-icons/tb'
@@ -10,6 +11,7 @@ import {MdNotifications as Notify} from 'react-icons/md'
 export default function PostButton({createPost}) {
 
 	const navigate = useNavigate()
+	const { user } = useSelector( state => state.auth )
 
 	const makePost = () => {
 		createPost(true)
@@ -19,7 +21,7 @@ export default function PostButton({createPost}) {
 		<div className="postButton h-[80px] w-full rounded-sm dark:bg-gray-900 bg-white  flex justify-between px-1 items-center">
 			
 			<div onClick={()=>navigate('/profile')} className="w-12 h-12  rounded-full border-2 border-emerald-500 mr-1  ">
-				<img src={Pix0} alt="profile pix" className="h-12 w-12 p-1" />
+				<img src={user.profilePix || Pix0} alt="profile pix" className="h-12 w-12 p-1" />
 			</div>
 
 			<div onClick={makePost} className="cursor-pointer dark:bg-gray-700 bg-gray-100 mr-1 h-10 w-[calc(100%-40%)] flex items-center pl-1 font-extralight dark:text-gray-50 text-gray-600 rounded-md text-sm">

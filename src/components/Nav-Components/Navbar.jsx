@@ -1,22 +1,27 @@
 import React from 'react'
-import { useState,useContext} from 'react'
-import {HiHome as Home} from 'react-icons/hi'
+import { useState,useContext,useEffect } from 'react'
+import { HiHome as Home } from 'react-icons/hi'
 import { useNavigate } from 'react-router-dom'
-import {FiSettings as Settings } from 'react-icons/fi' 
-import {BiSearch as SearchIcon } from 'react-icons/bi'
-import {MdNotifications as Notify} from 'react-icons/md'
-import {NavHide} from '../../context/hideNavContext.jsx' 
-import {FaUserFriends as Friends, FaFacebookMessenger as Message} from 'react-icons/fa'
+import { HiMenu as Menu } from  "react-icons/hi"
+import { FiSettings as Settings } from 'react-icons/fi' 
+import { BiSearch as SearchIcon } from 'react-icons/bi'
+import { MdNotifications as Notify } from 'react-icons/md'
+import { NavHide } from '../../context/hideNavContext.jsx' 
+import { socketIO } from '../../context/socketContext.jsx'
+import { FaUserFriends as Friends, FaFacebookMessenger as Message } from 'react-icons/fa'
 
 
 export default function Navbar({changeScreen,onSettings,onSearch}) {
 	const {hideNav} = useContext(NavHide)
+	const { socket } = useContext(socketIO)
+	const [chatNotifyCount,setChatNotifyCount] = useState(false)
+	const fullIco = `text-xl md:text-2xl`
 	const ico = 'text-xl md:text-2xl'
 	const selectColor = 'text-sky-400'
 	const routes = [
 				{ icon:<Home  className={`${ico}`} />, name:'HOME' },
 				{ icon:<Friends className={`${ico}`}/>, name:'FRIEND' },
-				{ icon:<Message className={`${ico}`}/>, name:'MESSAGE' },
+				{ icon:<div className='relative'> <Message className={`${ico}`} /> { chatNotifyCount && <div className="w-4 h-4 flex justify-center items-center bg-red-700 rounded-full absolute text-sm md:text-md -top-1 -right-1 text-white ">1</div> } </div>, name:'MESSAGE' },
 				{ icon:<Notify  className={`${ico}`}/>, name:'NOTIFY' }
 			]
 
@@ -24,6 +29,18 @@ export default function Navbar({changeScreen,onSettings,onSearch}) {
 	const [select,setSelect] = useState(routes[0].name)
 	const tc = 'w-10 md:w-16 flex justify-center border-blue-400 pb-2 transition-all'
 	
+
+	//  Turn on and off chat notification
+
+	useEffect(() => {
+		socket.on('new-chat-arrival', () => {
+			console.log("New Chat Don Come Go and check for your self")
+			setChatNotifyCount(true)
+		})
+	}, [socket])
+
+
+
 	//  func: Choose (A Route)
 	function Choose(icon){
 		setSelect(icon)
@@ -33,7 +50,8 @@ export default function Navbar({changeScreen,onSettings,onSearch}) {
 			case routes[1].name :
 				return changeScreen(routes[1].name)
 			case routes[2].name :
-				return navigate('chat')
+				setChatNotifyCount(false)
+				return navigate('/chat')
 			case routes[3].name :
 				return changeScreen(routes[3].name)
 			default:
@@ -52,8 +70,8 @@ export default function Navbar({changeScreen,onSettings,onSearch}) {
 			</div>
 
 		<div className="col-span-1 absolute top-1 right-0 px-2 space-x-3 flex justify-evenly transition-all " >
-				<SearchIcon onClick={()=>onSearch(true)} className="dark:bg-gray-800 dark:text-gray-100 text-gray-800 bg-gray-100 p-[3px] rounded-full text-2xl md:text-3xl lg:text-3xl"/>
-				<Settings onClick={()=>onSettings(true)} className=" dark:text-gray-100 text-gray-600 p-[2px] rounded-full text-2xl md:text-3xl lg:text-3xl"/>
+				<SearchIcon onClick={()=>onSearch(true)} className="dark:bg-gray-700 dark:text-gray-100 text-gray-800 bg-gray-100 p-[3px] rounded-full text-2xl md:text-3xl lg:text-3xl"/>
+				<Menu onClick={()=>onSettings(true)} className=" dark:text-gray-100 dark:bg-gray-700 text-gray-600 p-[2px] rounded-full text-2xl md:text-3xl lg:text-3xl"/>
 			</div>
 
 		</div>

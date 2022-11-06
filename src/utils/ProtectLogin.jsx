@@ -1,20 +1,14 @@
 import React from 'react'
-import { useEffect,useContext } from 'react'
-import { useNavigate, Outlet } from 'react-router-dom'
-import useAuth from '../hooks/useAuth.jsx'
+import { useContext,useEffect } from 'react'
+import { useSelector } from 'react-redux'
+import { Outlet, Navigate } from 'react-router-dom'
 
 
-export default function ProtectLogin() {
+export default function ProtectLogin({children}) {
 
-const [currentUser, setCurrentUser]= useAuth()
+	const { user } = useSelector(state => state.auth)
+	
 
-const navigate=useNavigate()
-
-	useEffect(() => {
-		if (currentUser)
-			navigate('/Post') 
-	}, [])
-
-	return <Outlet/>
+	return user?.username ? <Navigate to='/' /> : <Outlet/>
 
 }

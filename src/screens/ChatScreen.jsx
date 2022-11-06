@@ -1,19 +1,19 @@
-import React from 'react'
+ import React from 'react'
 import { useState, useEffect } from 'react'
 import useAuth  from "../hooks/useAuth.jsx"	
 import UseTheme from '../hooks/useTheme.jsx'
-import { getConversations } from '../api/converationAPI.js'   
+import { useSelector, useDispatch } from 'react-redux'
+import { getConversations } from '../service/chatService.js'   
 import ChatBody from '../components/Chat-Components/chatBody.jsx'
 import OnlineFriends from '../components/Chat-Components/onlineFriends.jsx'
+import ChatScreenLoader from '../components/Chat-Components/chatScreenLoader.jsx'
 import ConversationList from '../components/Chat-Components/conversationList.jsx'
 
 export default function ChatScreen() {
 
+	const { user } = useSelector( state => state.auth )
+
 	const [toggleTheme,current] = UseTheme()
-
-	const [currentUser] = useAuth()
-
-	// const {recipient} = useContext(NewRecipient)
 
 	const [openMobileChat, setOpenMobileChat] = useState(false)
 
@@ -23,20 +23,20 @@ export default function ChatScreen() {
 
 	const [ currentConversation,setCurrentConversation] = useState(null)
 
-	useEffect(() => {
+	useEffect(() => { 
 		setIsLoading(true)
-		// console.log(currentUser)
-		const fetch = async()=>{
-			const data = await getConversations(currentUser?.id)
-			// console.log("My people" , data)
+		// console.log(user)
+		const fetch = async() => {
+			const data = await getConversations(user?.id)
+			console.log("My people fami data conv :: " , data)
 			setConversation(data)	
 			setIsLoading(false)
 		} 
 		fetch()   
-	}, [currentUser])
+	}, [user])
 
 	if(isLoading)
-		return <h2 className="text-center mt-5 text-gray-400">Loading ...</h2>
+		return <ChatScreenLoader />
 	  
 
 	return ( 
@@ -48,9 +48,9 @@ export default function ChatScreen() {
 			</div>*/}
 			
 			<div className="row-span-4  grid grid-cols-3 h-full grid-rows-1 mx-5 md:mx-1">
-				<ConversationList data={conversation} mainUser={currentUser}/>
+				<ConversationList data={conversation} mainUser={user}/>
 
-				<ChatBody mainUser={currentUser} />
+				<ChatBody mainUser={user} />
 			</div>
 
 		</main>

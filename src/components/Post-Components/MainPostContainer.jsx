@@ -1,28 +1,51 @@
 import React from 'react'
-import PostButton from './PostButton.jsx'
 import PostCard from './PostCard.jsx'
+import PostButton from './PostButton.jsx'
+import { useDispatch, useSelector } from 'react-redux'
 import PostModal from '../../modals/makePostModal.jsx'
+import { getUserPost } from "../../features/postSlice.js"
+import { NavHide } from '../../context/hideNavContext.jsx'
+import { getFriendsPost } from '../../service/postService.js'
+import { useState, useEffect, useRef, useContext } from 'react'
 import StoryContainer from '../Story-Components/StoryContainer.jsx'
 import {BsFileRichtextFill as Text1, BsTextareaT as Text} from 'react-icons/bs'
-import { useState, useEffect, useRef, useContext } from 'react'
-import {NavHide} from '../../context/hideNavContext.jsx'
 
-export default function MainPostContainer({toggleViewStoryBox,toggleAddStory}) {
+
+
+export default function MainPostContainer({toggleViewPost,toggleViewStoryBox,toggleAddStory}) {
 	const MyPosts = [1,2,2]
 	const contRef = useRef(null)
+	const dispatch = useDispatch()
 	const {setHideNav} = useContext(NavHide)
-	const [breakPoint,setbreakPoint] = useState(window.innerWidth)
+	const { userPost } = useSelector( state => state.post)
+	const [loading,setLoading] = useState(false)
+	const { user } = useSelector(state => state.auth)
 	const [showPostModal,setShowPostModal] = useState(false)
+	const [breakPoint,setbreakPoint] = useState(window.innerWidth)
+
+	useEffect(() => {
+		const loadIt = async() => {
+			// console.log(toggleViewPost,toggleViewStoryBox,toggleAddStory)
+			setLoading(true)
+			await dispatch(getUserPost(user?.id))
+			setLoading(false)
+		}
+		loadIt()
+
+	}, [])
 	
+
 
 	function openPostModal(action){
 		setHideNav(true)
 		setShowPostModal(action)
 	}
 
+
 	useEffect(() => {
 		window.addEventListener('resize',()=>setbreakPoint(window.innerWidth))
 	}, [window.innerWidth])
+
 
 	return (
 
@@ -32,12 +55,17 @@ export default function MainPostContainer({toggleViewStoryBox,toggleAddStory}) {
 				<PostButton createPost={openPostModal} />
 
 				<StoryContainer action1={toggleAddStory} action2={toggleViewStoryBox}/>
-
-				{
-					MyPosts.map(
-						(post,idx) => <PostCard PCRef={contRef} text={`${idx==1?"H":''}`} key={idx} />
-					)
+ 
+				{userPost ? 
+					(userPost?.map(
+						(post,idx) => <PostCard PCRef={contRef} toggleViewPost={toggleViewPost} userId={user?.id} PostId={post?.id} text={post.text}
+						 postUserId={post.UserId} imgUrl={post?.imageUrl} reactions={post.Reactions} comments={post.Comments} key={idx}
+						 feeling={post.feeling} />
+					)) : "Loading"
 				}
+
+				{loading ? <p className="text-center mt-4 text-2xl bg-blue-400">Loading </p> : "" }
+				
 
 			</div>
 			{ showPostModal ?

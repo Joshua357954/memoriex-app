@@ -1,23 +1,33 @@
 import Pix from './../../fonts/pix1.png'
 import { BiArrowBack }  from 'react-icons/bi'
 // import { Picker } from 'emoji-picker-element'
+import React from 'react'
 import { IoMdArrowBack } from 'react-icons/io'
+import io  from 'socket.io-client'
 import { FiSend as SendIcon } from 'react-icons/fi'
 import { MobileChat } from './../../context/mobileChatState'
 import { BsEmojiSmile as Emoji  } from 'react-icons/bs'
+import { markReadChat } from '../../service/chatService.js'
 import { ImAttachment as Attachement } from 'react-icons/im'
 import { NewRecipient } from './../../context/recipientContext.jsx'
-import React, { useRef, useState, useEffect, useContext } from 'react'
-import { getConversationMessages, sendMessageToChat } from './../../api/messageAPI.js'    
+import { socketIO } from './../../context/socketContext.jsx'
+import { useRef, useState, useEffect, useContext } from 'react'
+import { getConversationMessages, sendMessageToChat } from '../../service/messageService.js'    
+
+// const ENDPOINT = "http://localhost:5001"
+// let userSocket = ''
 
 
-export default function chatBody({data,mainUser}) {
+export default function chatBody({mainUser}) {
 
-	const {mobileChatOpen, setChatOpen} = useContext(MobileChat)
-	const {recipient, setRecipient} = useContext(NewRecipient)
-	const [chatMessages,setChatMessages] = useState([])
+	const lastMID = useRef(0)
 	const [text,setText] = useState('')
+	const { socket } = useContext( socketIO )
+	const [chatMessages,setChatMessages] = useState([])
 	const [openEmojies, setOpenEmojies] = useState(false)
+	const {recipient, setRecipient} = useContext(NewRecipient)
+	const {mobileChatOpen, setChatOpen} = useContext(MobileChat)
+
 
 	// Emoji Picker initialization 
 	// const Emojies = new Picker({
@@ -32,8 +42,9 @@ export default function chatBody({data,mainUser}) {
 
 	// console.log(mainUser)
 
+
 	// Check if the id belongs to the current loggedin user
-	const isUserOwn= (sender,receiver) => sender===receiver
+	const isUserOwn= (sender,receiver) => parseInt(sender) == parseInt(receiver)
 
 	const chatInputRef = useRef()
 	const scrollToRef = useRef()
@@ -46,20 +57,62 @@ export default function chatBody({data,mainUser}) {
 
 	// Scroll To Bottom
 	useEffect(() => {
-		scrollToRef.current?.scrollIntoView({behavior:'smooth'})
+		scrollToRef.current?.scrollIntoView({behavior : 'smooth'})
 	}, [chatMessages])
 
 
 	// Get Messages 
 	useEffect(() => {
-		console.log(recipient)
+		// console.log(recipient)
 		const getChatMessages = async() =>{
-			const msgs = await getConversationMessages(recipient.convId)
-			console.log("Message : ",msgs)
+			const msgs = await getConversationMessages(recipient?.convId)
+			// console.log("Message : ",msgs)
 			setChatMessages(msgs) 
 		}
 		getChatMessages()
 	}, [recipient])
+
+
+	useEffect(() => {
+		if (recipient){
+			markReadChat(recipient?.convId, mainUser?.id)
+			// console.log("Hiii ")
+		}
+	}, [recipient])
+
+
+
+	// Socket io stuffs 
+	useEffect(() => {
+		// const socket = io(ENDPOINT)
+		// socket = socket
+		socket.emit("setup", mainUser)
+		socket.on('connected', (usersID) => {
+			// console.log("User ID OF : ",usersID)
+		})
+	}, [])
+
+
+	useEffect(() => {
+		socket.emit('join chat',recipient.convId)
+		socket.on('joined chat', (id) => {
+			console.log("User has successfully joined chat : ",id)
+		})
+	},[])
+
+	useEffect(() => {
+
+		socket.on('new message',(mesg) => {
+			console.log("New Message",mesg)
+			if (mesg.id != lastMID.current ){
+				setChatMessages(prev => [...prev,mesg])
+				lastMID.current = mesg.id
+				console.log("Kapi ",lastMID.current , mesg.id)
+			}
+		})
+	},[socket])
+
+
 
 
 	// Tailwind Styles
@@ -67,6 +120,7 @@ export default function chatBody({data,mainUser}) {
 		chat_header:" bg-white w-full border-2 border-b-gray-300 row-span-1 px-2 flex gap-4 justify-start items-center rounded",
 		chat_main:`${mobileChatOpen ? 'absolute top-0 left-0 bottom-0 right-0 ' : 'hidden'} bg-orange-100 h-full grid grid-rows-5 transition-all col-span-2 md:ml-2 rounded md:static`
 	}
+
 
 	//  Add Message To Ui State
 	function addMessageToChat(SenderId,text){
@@ -79,16 +133,19 @@ export default function chatBody({data,mainUser}) {
 			updatedAt: `${new Date}`
 		}
 		setChatMessages(prev => [...prev,newMessage])
+		return newMessage
 	}
 
+
 	// Send Message To Database
-	const sendMessage = async() =>{
+	async function sendMessage () {
 		if (!text) return 
 		// Play sound if sent
 		console.log(recipient)
 		try{
 			await sendMessageToChat(recipient.convId,mainUser['id'],text)
-			addMessageToChat(mainUser['id'],text)
+			const toSocket = addMessageToChat(mainUser['id'],text)
+			socket.emit('send message', {toSocket,recipient:recipient?.id})
 			setText('')
 			chatInputRef.current.focus()
 			console.log("Message Sent to : ",mainUser['id'])
@@ -105,7 +162,7 @@ export default function chatBody({data,mainUser}) {
 		<div className={tw.chat_main}>
 			<div className={tw.chat_header}>
 
-				{winWidth < 780 ? <BiArrowBack onClick={()=> setChatOpen(false)} size={25} /> : ""}
+				<BiArrowBack className="md:hidden" onClick={()=> setChatOpen(false)} size={25} />
 					
 				<div className="flex-col w-14 h-14 mx-2 md:mr-2 flex justify-center items-center relative rounded-full border-[3px] border-gray-300">
 					<img src={Pix} alt="chat-name"/>
@@ -114,7 +171,7 @@ export default function chatBody({data,mainUser}) {
 
 				<div>
 					<h1 className="text-gray-900">{recipient?.username}</h1>
-					 <p className="pl-2 text-sm font-light">online</p>
+					 <p className="pl-1 text-sm font-light">online</p>
 				</div>
 		
 			</div>
@@ -122,14 +179,14 @@ export default function chatBody({data,mainUser}) {
 			<div className="row-span-4 bg-white h-full transition-all flex flex-col overflow-y-scroll w-full h-full px-8 pt-2">
 				
 				{ chatMessages ? 	
-					(chatMessages.map((mesg)=>{
+					(chatMessages.map((mesg) => {
 						const messageUser= isUserOwn(mesg.SenderId,recipient?.id)
-						return (<div key={mesg.id+Math.floor(Math.random(200))} className={`border-t-2  p-2 my-[10px] w-40 max-w-2xl select-none md:max-w-2xl ${messageUser ? 'self-end bg-gray-100 rounded-tr-none' : 'self-start bg-blue-100 rounded-tl-none'} rounded-lg `}>
-									<h2 className="font-extralight  text-gray-600 text-sm">{ messageUser ? recipient.username : mainUser.username}</h2>
+						return (<div key={mesg.createdAt} className={`border-t-2  p-2 my-[10px] w-40 max-w-2xl select-none md:max-w-2xl ${messageUser ? 'self-end bg-gray-100 rounded-tr-none' : 'self-start bg-blue-100 rounded-tl-none'} rounded-lg `}>
+									<h2 className="font-extralight  text-gray-600 text-sm">{ messageUser ? recipient?.username : mainUser?.username}</h2>
 									<p>{mesg.text}</p>
 							</div>)
 						})
-					)   :    ""
+					)   :    "Loading..."
 				}
 
 				<div ref={scrollToRef} />

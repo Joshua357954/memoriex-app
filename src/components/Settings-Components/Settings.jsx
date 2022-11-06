@@ -2,18 +2,24 @@ import React from 'react'
 import Theme from './Theme.jsx'
 import { useState } from 'react'
 import LockChat from './LockChat.jsx'
+import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
+import { reset } from '../../features/authSlice.js'
 import PersonalInfo from './SettingsEntryCard1.jsx'
+import useAccounts from '../../hooks/useAccounts.jsx'
+import { FaExchangeAlt as Exchange } from 'react-icons/fa'
 import MiniProfile from '../Profile-Components/MiniProfile.jsx'
 import { MdManageAccounts as Acct, MdLock as Lock } from 'react-icons/md'
-import { FaExchangeAlt as Exchange } from 'react-icons/fa'
 
 
 export default function Settings() {
 	const collBtnH = '14'
 	const navigate = useNavigate()
+	const dispatch = useDispatch()
 	const [Collapse,setCollapse] = useState( { 'acctSet':false, 'lockChat':false } )
+	const [ getCurrentAccount,addAccount,removeAccount,logOutUser ] = useAccounts()
 	
+
 	function toggleCollapse(item) {
 		console.log(item)
 		setCollapse((prev)=>({
@@ -21,9 +27,11 @@ export default function Settings() {
 		})) 
 	}
 
-	function logOut(){
+	async function logOut(){
 		const sure = confirm('☸️ Do You You Want To LogOut ⚠️')
 		if (sure){
+			await dispatch(reset())
+			logOutUser()
 			navigate('/Accounts')
 		}
 	}
@@ -42,7 +50,7 @@ export default function Settings() {
 				{/*<div className={`transition-all ${Collapse['acctSet']? "max-h-45" : `max-h-${collBtnH}`} overflow-hidden w-full`}>*/}
 				<div className={`transition-all focus:outline-none  ${Collapse['acctSet']? "max-h-45" : `h-${collBtnH}`} overflow-hidden w-full`}>
 					<div onClick={()=>toggleCollapse('acctSet')} className={`cursor-pointer h-${collBtnH} space-x-2 px-2 py-1 dark:bg-gray-400 bg-gray-200 flex items-center dark:text-gray-50 text-gray-800 rounded-sm`}>
-						<Acct size={23}className="text-gray-900" /> <p className="text-sm">Account</p>
+						<Acct size={23}className="text-gray-900" /> <p className="text-sm">Account Settings</p>
 					</div>
   
 					<div className="w-full h-full ">

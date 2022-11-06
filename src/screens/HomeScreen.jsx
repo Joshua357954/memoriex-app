@@ -1,13 +1,15 @@
 import '../style.css' 
 import React from 'react'
-import useAuth from '../hooks/useAuth.jsx'
 import { useNavigate } from 'react-router-dom'
 import { MdLock as Lock } from 'react-icons/md'
 import { LockApp } from '../context/lockChatContext.jsx'
+import { socketIO } from '../context/socketContext.jsx'
+import { useDispatch, useSelector } from 'react-redux'
 import { IoMdArrowBack as ArrowBack } from 'react-icons/io'
 import NavBar from '../components/Nav-Components/Navbar.jsx'
 import Friend from '../components/Friend-Components/Friend.jsx'
 import Search from '../components/Search-Components/Search.jsx'
+import ViewPostBox from '../components/Post-Components/viewPostBox.jsx'
 import AddStory from '../components/Story-Components/AddStory.jsx'
 import Utilities from '../components/Post-Components/Utilities.jsx'
 import { useContext, useState, useEffect, useCallback } from 'react'
@@ -22,11 +24,14 @@ import FriendSuggestion from '../components/Friend-Components/FriendSuggestion.j
 export default function PostScreen() {
 	const store_name = 'memoriex-chat-lock-state'
 	const [newStory,setNewStory] = useState(false)
+	const [showPost,setShowPost] = useState(false)
 	const [viewStory,setViewStory] = useState(false)
-	const {chatLock,setChatLock,showBtn,setShowBtn} = useContext(LockApp)
 	const [openSearch,setOpenSearch] = useState(false)
 	const [openSettings,setOpenSettings] = useState(false)
 	const [currentScreen,setCurrentScreen] = useState('POST')
+	const { socket } = useContext(socketIO)
+	const { user } = useSelector( state => state.auth )
+	const {chatLock,setChatLock,showBtn,setShowBtn} = useContext(LockApp)
 	
 
 	const toggleAddStory = (state) => {
@@ -38,6 +43,13 @@ export default function PostScreen() {
 	const toggleViewStoryBox = (state) => {
 		console.log("View story ...")
 		setViewStory(state)
+	}
+
+
+	const toggleViewPost = (state) => {
+		console.log("View Post ...",showPost)
+		setShowPost(state)
+		console.log("View Post2 ...",showPost)
 	}
 
 
@@ -55,6 +67,14 @@ export default function PostScreen() {
 		setChatLock(true) 
 		localStorage.setItem(OStoreName,'true')
 	}
+
+	// Socket io stuffs 
+	// useEffect(() => {
+	// 	socket.emit("setup", user)
+	// 	socket.on('connected', (usersID) => {
+	// 		// console.log("User ID OF : ",usersID)
+	// 	})
+	// }, [user])
 
 	
 	useEffect(() => {
@@ -85,10 +105,12 @@ export default function PostScreen() {
 
 				<div className="h-[90vh] grid grid-cols-6 grid-rows-1 transition-all">
 					
-					<Utilities />
+					<Utilities Settings={showSettings} />
+
 				{/* Change Screens Conditionally */}
-					{ (currentScreen=='POST'? <MainPostContainer toggleViewStoryBox={toggleViewStoryBox} toggleAddStory={toggleAddStory} /> : currentScreen=='FRIEND'? <Friend /> : currentScreen=='NOTIFY'? <Notification /> : <MainPostContainer/> ) }
+					{ (currentScreen=='POST'? <MainPostContainer toggleViewPost={toggleViewPost} toggleViewStoryBox={toggleViewStoryBox} toggleAddStory={toggleAddStory} /> : currentScreen=='FRIEND'? <Friend /> : currentScreen=='NOTIFY'? <Notification /> : <MainPostContainer/> ) }
 			
+
 					<div className="md:col-span-1 lg:col-span-2 row-span-1 bg-orange-300 hidden lg:grid grid-rows-6 h-full ">	
 						
 						<FriendSuggestion/>
@@ -119,7 +141,7 @@ export default function PostScreen() {
 					<div className="bg-gray-100 dark:bg-gray-700 h-full md:w-[45vw] lg:w-[30vw] h-full ">
 						<div className="w-full h-12 dark:bg-gray-700 bg-gray-300 flex  dark:text-gray-50 textjustify-start items-center space-x-4 px-1">
 							<ArrowBack onClick={()=>setOpenSettings(false)} size={25} className="dark:text-gray-50 text-gray-800" />
-							<p className="dark:text-gray-100 text-gray-900">Settings</p>
+							<p className="dark:text-gray-100 text-gray-900">Menu</p>
 						</div>
 
 						<div className={`md:${scrollbar} h-[87vh] w-full overflow-y-auto`}>	
@@ -130,6 +152,14 @@ export default function PostScreen() {
 				</div> : "" 
 			}
 
+		{/* View Post (Fake Screen) */}
+
+		{ showPost ?
+				<div className={`${absolute_full} flex justify-center items-center bg-black bg-opacity-[.7]` }>	
+					<ViewPostBox toggleViewPost={toggleViewPost} />
+				</div> : ""
+			}
+
 
 		{/* Modal to Create a New Story */}
 
@@ -138,6 +168,7 @@ export default function PostScreen() {
 					<AddStory toggleAddStory={toggleAddStory} />
 				</div> : ""
 			}
+
 
 		{/* Modal to View a User's Story */}
 

@@ -81,7 +81,7 @@ export default function LockScreenModal() {
 
 	return (
 		<div className="flex select-none py-1 justify-center items-center dark:bg-gray-800 bg-gray-50 h-screen w-screen">
-			<div className="w-full flex flex-col justify-around  items-center bg-red-400 h-full md:w-[40vw] lg:[50vw]">
+			<div className="w-full flex flex-col justify-around  items-center bg-blue-300 dark:bg-blue-400 h-full md:w-[40vw] lg:[50vw]">
 				<div className="flex flex-col items-center justify-between">
 					<div className="rounded-full h-16 w-16 ">
 						<img src={Pix} className="w-full h-full rounded-full" alt=""/>

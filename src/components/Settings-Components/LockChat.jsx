@@ -1,4 +1,5 @@
 import React from 'react'
+import { toast } from 'react-toastify'
 import {useEffect, useContext, useState} from  'react'
 import { LockApp } from '../../context/lockChatContext.jsx'
 
@@ -29,7 +30,7 @@ export default function LockChat() {
 			localStorage.setItem(code_store,codeInput)
 			setMainCode(codeInput)
 			setCodeInput('')
-			alert("Yay 🌟, New Memoriex Chat Password Set 😊")
+			toast("Yay 🌟, New Memoriex Chat Password Set 😊",{ position:'top-center', type:'info' })
 		}
 	}
 
@@ -40,10 +41,13 @@ export default function LockChat() {
 		if (code1==mainCode){
 			localStorage.setItem(code_store,code2)
 			setMainCode(code2)
-			return alert('Password Set Successfully 🎊 🚀')
+			return toast('Password Set Successfully 🎊 🚀',{type:'success'})
 		}
 		else
-			alert("⚠️ Old Password is incorrect 🔴")
+			toast("⚠️ Old Password is incorrect 🔴",{
+				position:'top-center',
+				type:'error'
+			})
 	}
 
 

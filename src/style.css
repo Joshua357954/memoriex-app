@@ -6,56 +6,19 @@ body{
 }
 
 
-/*.input_box{
-	background-color:skyblue;
-	width: 80px;
-	z-index: -200;
-	border-radius: .4rem;
-	opacity: 1;
-	/*visibility: hidden;*/
-/*}
-.input_box::before{
-	content:"Change";
-	display: block;
-	height: 7px;
-	z-index: -10;
-	background:skyblue;
-	text-align: center;
-
-	color:white;
-	padding: 4px 10px 4px 8px;
-*/
-
-/*.input_box:focus::before{
-	outline: none;
-}
-.input_box:hover::before{
-	content: 'Choose'
-}
-*//*/*.conversation-card{
-	background-color: red;
+.spinner{
+	border:4px solid white;
+	border-top: 4px solid rgba(0,0,0,.6);
+	border-radius: 50%;
+	width:20px;
+	height: 20px;
+	animation: spin .8s linear infinite ;
 }
 
-.conversation-box::-webkit-scrollbar{
-	width:15px;
-	
+@keyframes spin {
+	0% { transform: rotate(0deg); }
+	100% { transform: rotate(360deg); }
 }
-
-.conversation-box ::-webkit-scrollbar-track{
-	background:blue;
-	width:16px;
-}
-
-.conversation-box ::-webkit-scrollbar-thumb{
-	background-color: red;
-	color:red;
-}
-
-*/
-
-
-
-
 
 
 

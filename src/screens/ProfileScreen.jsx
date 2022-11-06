@@ -1,44 +1,131 @@
+import React from 'react'
+import moment from 'moment'
 import Pix from './../fonts/pix2.png'
+import { toast } from 'react-toastify'
 import Pix1 from './../fonts/pix3.png'
-import React,{useState,useRef} from 'react'
 import UseTheme from '../hooks/useTheme.jsx'
-import { useNavigate } from 'react-router-dom'
+import { useState,useRef,useEffect } from 'react'
 import ViewImage from '../modals/ViewImgModal.jsx'
 import PostModal from '../modals/makePostModal.jsx'
-import { BsFillCameraFill as Camera, BsFilePost as PostIcon } from "react-icons/bs"
+import { getUser } from  '../service/userService.js'
+import { getMyPost } from '../service/postService.js'
+import { useSelector, useDispatch } from 'react-redux'
+import { useNavigate, useParams } from 'react-router-dom'
 import { IoMdArrowBack as ArrowBack } from 'react-icons/io'
 import PostCard from '../components/Post-Components/PostCard.jsx'
 import { BiCopy , BiMessageSquareAdd as Add } from 'react-icons/bi'
 import Utilities from '../components/Post-Components/Utilities.jsx'
 import PostButton from '../components/Post-Components/PostButton.jsx'
-import { FaUserFriends as Friends, FaBriefcase as Work , FaClock as Joined } from 'react-icons/fa'
+import ViewPostBox from '../components/Post-Components/viewPostBox.jsx'
+import EditProfile from '../components/Profile-Components/EditProfile.jsx'
+import { BsFillCameraFill as Camera, BsFilePost as PostIcon } from "react-icons/bs"
+import { FaUserFriends as Friends, FaBriefcase as Work, FaClock as Joined } from 'react-icons/fa'
 import { MdModeEdit as Edit, MdSchool as School, MdLocationOn as Location } from 'react-icons/md'
 
 
 export default function ProfileScreen() {
-	const [viewImg,setViewImg] = useState(false)
+	const { slug } = useParams()
 	const navigate = useNavigate()
-	const username = 'Enyi Osabiya'
 	const profileScroll = useRef()
 	const [toggleTheme,current] = UseTheme()
+	const [viewImg,setViewImg] = useState(false)
+	const [ userPost,setUserPost ] = useState([])
+	const [otherUser,setOtherUser] = useState([])
+	const [showPost,setShowPost] = useState(false)
 	const [makePost,setMakePost] = useState(false)
-	const [currentImg,setCurrentImg] = useState({name:'Profile',file:"none"})
+	const { user } = useSelector(state => state.auth)
+	const [ isLoaing, setIsLoading ] = useState(false)
+	const [otherUserPost,setOtherUserPost] = useState([])
+	const [openEditProfile,setOpenEditProfile] = useState(false)
+
+
+	function isMe () {
+
+		const LC = (letter) => letter.toLowerCase()
+		const INT = (string) => parseInt(string)
+
+		if(!slug || slug == undefined )
+			return true
+		else if ( slug && LC(slug) == LC(user.username) || slug && INT(slug) == user.id )
+			return true
+		else 
+			return false
+	}
+
+	const [currentImg,setCurrentImg] = useState({name:'Profile',file:"",me:isMe()})
+
+
+	const copyLink = () => {
+		const userLink = window.location.href
+		toast(userLink)
+	}
+
 
 	function openPostModal(action){
 		setMakePost(action)
 	}
 
+
 	function openImage(action,img=""){
 		setViewImg(action)
+	
+
+	}function currentPhoto (state) {
+		return  !user.profilePix && !user.coverPhoto ? "" : state=='Profile' ? user.profilePix : user.coverPhoto
 	}
 
+
 	function selectImg(state){
-		setCurrentImg({name:state,file:'none'})
+		console.log("My Current Photo : ",currentPhoto(state))
+		setCurrentImg({name:state,file:currentPhoto(state),me:isMe()})
+		console.log("Setting Current : ",!user.profilePix || !user.coverPhoto ? "" : state=='Profile' ? user.profilePix : user.coverPhoto)
 		setViewImg(true)
 	}
 
+	const toggleEditProfile = (state) => {
+		setOpenEditProfile(state)
+	}
+
+	const toggleViewPost = (state) => {
+		console.log("View Post ...",showPost)
+		setShowPost(state)
+	}
+
+
+	const absolute_full = 'absolute top-0 bottom-0 right-0 left-0'
 	const scrollbar = 'md:scrollbar md:dark:scrollbar-track-gray-600 md:dark:scrollbar-thumb-gray-600  md:dark:hover:scrollbar-thumb-gray-400 md:scrollbar-thin md:scrollbar-track-white md:scrollbar-thumb-gray-300'
 	
+
+	//  Get the OtherUser 
+	useEffect(() => {
+		if (slug) {
+			setIsLoading(true)
+			console.log(slug)
+			async function getOtherUser() {
+				const state = await getUser(slug)
+				console.log("Other User From ProfileScreen : ", state)
+				setOtherUser(state)
+			}
+			getOtherUser()
+			setIsLoading(false)
+		}
+	}, [])
+
+
+	//  Get Other-Users Post
+	useEffect(() => {
+		async function getUsersPosts() {
+			const state = await getMyPost(isMe() ? user?.id : otherUser?.id)
+			console.log(" Post From ProfileScreen : ", state)
+			return setUserPost(state) 
+		}
+		getUsersPosts()
+		
+	}, [user,otherUser])
+
+	if (isLoaing){
+		return <h1 className="text-center text-gray-700 text-lg"> Loaing Your Profile </h1>
+	}
 
 	return (
 		<div className=" h-screen w-screen flex dark:bg-gray-700 bg-gray-100 justify-center overflow-hidden items-center">
@@ -47,22 +134,21 @@ export default function ProfileScreen() {
 				{/* Nav Bar*/}
 				<div className="flex pl-1 justify-start h-14 items-center space-x-4 md:space-x-6 dark:bg-gray-600 bg-gray-200 w-full">
 					<ArrowBack className="dark:text-gray-50" onClick={()=>navigate('/')} size={25}/>
-					<p className="dark:text-gray-100">{username}</p>
+					{<p className="cursor-pointer dark:text-gray-100">{isMe() ? user?.username : otherUser?.username }</p>}
 				</div>
-
-				<div ref={profileScroll} className={`overflow-y-auto h-full bg-transparent w-full ${scrollbar}`}>
+			<div ref={profileScroll} className={`overflow-y-auto h-full bg-transparent w-full ${scrollbar}`}>
 					
 					{/* CoverPhoto Profile Img / bio*/}
 					<div className="flex flex-col bg-transparent h-32 justify-center w-full items-center ">
 
-						<div style={{backgroundImage:`url(${Pix})`,backgroundSize:'cover'}} className="mt-1 relative bg-gray-50 w-4/5 md:w-4/6 rounded-tl-md rounded-tr-md md:rounded-tr-lg md:rounded-tl-lg h-28">
+						<div style={{backgroundImage:`url(${otherUser?.coverPhoto || user.coverPhoto || Pix})`,backgroundSize:'cover'}} className="mt-1 relative bg-gray-50 w-4/5 md:w-4/6 rounded-tl-md rounded-tr-md md:rounded-tr-lg md:rounded-tl-lg h-28">
 							
 							{/*<span className="cursor-pointer absolute bottom-3 right-3 bg-black h-7 w-7 dark:bg-white dark:bg-black flex justify-center items-center text-xl rounded-full text-white">+</span>*/}
-							<span onClick={()=>selectImg("Cover Photo")} className="absolute bottom-3 right-3 p-1 rounded-full bg-black dark:bg-gray-300"> <Camera className="dark:text-black text-gray-100"/> </span>
+							<span  onClick={()=>selectImg("Cover Photo")} className="absolute bottom-3 right-3 p-1 rounded-full bg-black dark:bg-gray-300"> { isMe() ? <Camera className="dark:text-black text-gray-100"/> : <h1 className="text-3xl text-white font-extrabold">--</h1>} </span>
 						
-							<div onClick={()=>selectImg("Profile")} className="relative h-28 w-28 border-2 absolute left-[30%] -bottom-1/2 flex justify-center items-center border-red-400 rounded-full">	
-								<img src={Pix1} className="m-1 w-full h-full rounded-full" alt="Profile pix" />
-								<span className="absolute bottom-2 right-1 p-1 rounded-full bg-black  dark:bg-gray-300"><Camera className="text-gray-100 dark:text-black"/> </span>
+							<div onClick={() => selectImg('Profile')} className=" w-32 h-32 absolute left-[30%] -bottom-1/2 flex justify-center items-center border-red-400 rounded-full dark:bg-gray-900 bg-gray">	
+								<img src={otherUser.profilePix || user.profilePix || Pix1 } className="m-1 w-full h-full rounded-full" alt="Profile pix" />
+								{isMe() ? <span className="absolute bottom-2 right-1 p-1 rounded-full bg-black  dark:bg-gray-300"><Camera className="text-gray-100 dark:text-black"/> </span> : "" }
 							</div>	
 
 						</div>
@@ -70,36 +156,37 @@ export default function ProfileScreen() {
 					</div>
 
 					{/* Name */}
-					<div className='w-[95%] bg-transparent mt-14 dark:text-gray-100 text-center'>{username}</div>
+					<div className='cursor-pointer w-[95%] bg-transparent mt-14 dark:text-gray-100 text-center'>{isMe() ? user?.username : otherUser?.username }</div>
 
 					{/* Bio and Others  */}
-					<div className="flex  flex-col justify-start items-center h-full w-full bg-transparent">	
-						<div className="w-[60%] text-xs dark:text-gray-200 text-gray-700 dark:bg-gray-800 pt-2 h-20 max-h-20">
-							My name is Enyiola Osabiya and am a fullstck web developer in hungray, Yay. ✅
+					<div className="cursor-pointer flex flex-col justify-start items-center h-full w-full bg-transparent">	
+						<div className="w-[60%] text-xs dark:text-gray-200 text-gray-700 dark:bg-gray-800 pt-2 h-20 max-h-20 text-center text-md">
+							{isMe() ? user?.bio : otherUser?.bio }
 						</div>
 
 						{/* Utilities */}
-						<div className='flex space-x-4 pt-2'>	
-							<button className="flex justify-start bg-blue-500 text-gray-50 py-1 rounded-md round px-2 space-x-3 items-center"> <Add/> <p>Add Story</p></button>
-					
-							<button className="flex justify-start bg-blue-500 text-gray-50 py-1 rounded-md round px-2 space-x-3 items-center"> <Edit/> <p>Edit</p> </button>
+						<div className='flex space-x-4 pt-2'>
 							
-							<button className="bg-gray-200 border-2 border-gray-300 text-xl rounded-md px-3 py-1"> <BiCopy/> </button>
+							{isMe() ? <button onClick={() => navigate('/')} className="flex justify-start bg-blue-500 text-gray-50 py-1 rounded-md round px-2 space-x-3 items-center">  <p>Add Story</p></button> : ""}
+							{isMe() ? <button onClick={() => toggleEditProfile(true)} className="flex justify-start bg-blue-500 text-gray-50 py-1 rounded-md round px-2 space-x-3 items-center"> <Edit/> <p>Edit</p> </button> : ""}		
+							{isMe() ? "" : <button className="flex justify-start bg-blue-500 text-gray-50 py-1 rounded-md round px-2 space-x-3 items-center"> <Add/> <p>Add Friend</p> </button>}
+							
+							<button onClick={copyLink} className="bg-gray-200 border-2 border-gray-300 text-xl rounded-md px-3 py-1"> <BiCopy/> </button>
 						</div>	
 
 						{/* User Info */}
-						<div className="flex flex-col space-y-2 items-start text-xs pt-5 pl-3 w-full">
-							<div className="flex dark:text-gray-100 text-gray-900 items-center  space-x-3"> <Work/> <p>Self-Employed</p> </div>
-							<div className="flex dark:text-gray-100 text-gray-900 items-center space-x-3"> <School/> <p>Upward Int'l School</p> </div>
-							<div className="flex dark:text-gray-100 text-gray-900 items-center space-x-3"> <Location/> <p>Warri, Bayelsa</p> </div>
-							<div className="flex dark:text-gray-100 text-gray-900 items-center space-x-3"> <Joined/> <p>12 August 2022</p> </div>
+						<div className="cursor-default flex flex-col space-y-2 items-start text-xs pt-5 pl-3 w-full">
+							<div className="flex dark:text-gray-100 text-gray-900 items-center  space-x-3"> <Work/> <p>{ user?.job || "Not Set" }</p> </div>
+							<div className="flex dark:text-gray-100 text-gray-900 items-center space-x-3"> <School/> <p>{ user?.school || "Not Set" }</p> </div>
+							<div className="flex dark:text-gray-100 text-gray-900 items-center space-x-3"> <Location/> <p>{ user?.location || "Not Set" }</p> </div>
+							<div className="flex dark:text-gray-100 text-gray-900 items-center space-x-3"> <Joined/> <p>{moment(user?.createdAt).format('ll')}</p> </div>
 						</div>
 				
 						{/* Friends / Memoriex */}
-						<div className="flex w-full justify-between px-3 mt-3"> 
+						<div className="cursor-pointer flex w-full justify-between px-3 mt-3"> 
 							<div className="flex space-x-3">
 								<Friends className="dark:text-gray-100"/> 
-								<p className="text-sm text-gray-900 dark:text-gray-100">Friends (248)</p> 
+								<p className="text-sm text-gray-900 dark:text-gray-100">Friends (229)</p> 
 							</div>
 							<span className="text-xs text-blue-500 dark:text-blue-600">see all</span>
 						</div>
@@ -117,12 +204,16 @@ export default function ProfileScreen() {
 
 						<div className="w-full mt-2">
 							
-							<PostCard  />
-							<PostCard text="hi"/>
-							<PostCard />
-							<PostCard />
-							<PostCard />
-							<PostCard />
+							{ userPost[0] ?  userPost?.map((post,idx) => {
+								return <PostCard PCRef={profileScroll} toggleViewPost={toggleViewPost}  userId={user?.id} PostId={post.id} text={post.text}
+									postUserId={post.UserId} imgUrl={post?.imageUrl} reactions={post.Reactions} comments={post.Comments} key={idx}
+									feeling={post.feeling} />
+								})
+
+							:  <h1> No Post</h1>
+
+							}
+
 							{/* Filler Div (Lapsys) */}
 							<div className="w-full bg-transparent h-16"></div>
 						</div>
@@ -135,13 +226,29 @@ export default function ProfileScreen() {
 				<PostModal PREF={profileScroll} action={openPostModal} /> : ""
 			}
 
+			{/* View Post (Fake Screen) */}
+			{ showPost ?
+					<div className={`${absolute_full} flex justify-center items-center bg-black bg-opacity-[.7]` }>	
+						<ViewPostBox toggleViewPost={toggleViewPost} />
+					</div> : ""
+				}
+
 			{/* Modal For Viewing Images */}
 			{
 				viewImg ?
 					<div className='absolute top-0 left-0 bottom-0 right-0 bg-black'>
 						<ViewImage showImage={openImage} image={currentImg}  />
 					</div> : ""	
-			}	
+			}
+
+			{/* Edit Profile */}	
+			{
+				openEditProfile ?
+					<div className='transition-opacity absolute top-0 left-0 bottom-0 right-0 '>
+						<EditProfile toggleEditProfile={toggleEditProfile}/>
+					</div> : ""	
+			}
+
 
 			</div>	
 
